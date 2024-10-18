@@ -28,12 +28,13 @@ static I2SDevice_SAMD21G18x i2sd(*I2S);
 
 int I2SClass::_beginCount = 0;
 
-I2SClass::I2SClass(uint8_t deviceIndex, uint8_t clockGenerator, uint8_t sdPin, uint8_t sckPin, uint8_t fsPin) :
+I2SClass::I2SClass(uint8_t deviceIndex, uint8_t clockGenerator, uint8_t sdPin, uint8_t sckPin, uint8_t fsPin, int16_t mckPin) :
   _deviceIndex(deviceIndex),
   _clockGenerator(clockGenerator),
   _sdPin(sdPin),
   _sckPin(sckPin),
   _fsPin(fsPin),
+  _mckPin(mckPin),
 
   _state(I2S_STATE_IDLE),
   _dmaChannel(-1),
@@ -143,6 +144,10 @@ int I2SClass::begin(int mode, long sampleRate, int bitsPerSample, bool driveCloc
 
   pinPeripheral(_sdPin, PIO_COM);
 
+  if (_mckPin >= 0) {
+    pinPeripheral(_mckPin, PIO_COM);
+  }
+
   // done configure enable
   i2sd.enable();
 
@@ -167,6 +172,9 @@ void I2SClass::end()
   pinMode(_sdPin, INPUT);
   pinMode(_fsPin, INPUT);
   pinMode(_sckPin, INPUT);
+  if (_mckPin >= 0) {
+    pinMode(_mckPin, INPUT);
+  }
 
   disableClock();
 

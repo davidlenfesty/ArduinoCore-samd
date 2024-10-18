@@ -35,7 +35,7 @@ class I2SClass : public Stream
 {
 public:
   // the device index and pins must map to the "COM" pads in Table 6-1 of the datasheet 
-  I2SClass(uint8_t deviceIndex, uint8_t clockGenerator, uint8_t sdPin, uint8_t sckPin, uint8_t fsPin);
+  I2SClass(uint8_t deviceIndex, uint8_t clockGenerator, uint8_t sdPin, uint8_t sckPin, uint8_t fsPin, int16_t mckPin = -1);
 
   // the SCK and FS pins are driven as outputs using the sample rate
   int begin(int mode, long sampleRate, int bitsPerSample);
@@ -93,6 +93,7 @@ private:
   uint8_t _sdPin;
   uint8_t _sckPin;
   uint8_t _fsPin;
+  int16_t _mckPin;
 
   i2s_state_t _state;
   int _dmaChannel;
